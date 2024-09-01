@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public class Reservation {
 
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -13,14 +13,14 @@ public class Reservation {
 
     private LocalTime time;
 
-    public Reservation(Integer id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
