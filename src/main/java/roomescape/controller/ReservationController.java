@@ -23,12 +23,15 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
         List<ReservationResponse> responses = reservations.stream()
-                .map(ReservationResponse::from).toList();
+                .map(ReservationResponse::from)
+                .toList();
         return ResponseEntity.ok().body(responses);
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody @Valid ReservationCreateRequest request) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @RequestBody @Valid ReservationCreateRequest request
+    ) {
         Reservation reservation = new Reservation(
                 index.getAndIncrement(),
                 request.name(),
@@ -43,7 +46,9 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable Long id
+    ) {
         Reservation deleteReservation = reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
                 .findFirst()
