@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.controller.dto.request.ReservationCreateRequest;
 import roomescape.controller.dto.response.ReservationResponse;
 import roomescape.domain.Reservation;
+import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -18,44 +19,51 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     private AtomicLong index = new AtomicLong(1);
-    private List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
+
+        List<Reservation> reservations = reservationRepository.findAll();
+
         List<ReservationResponse> responses = reservations.stream()
                 .map(ReservationResponse::from)
                 .toList();
         return ResponseEntity.ok().body(responses);
     }
 
-    @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(
-            @RequestBody @Valid ReservationCreateRequest request
-    ) {
-        Reservation reservation = new Reservation(
-                index.getAndIncrement(),
-                request.name(),
-                request.date(),
-                request.time()
-        );
-
-        reservations.add(reservation);
-
-        URI location = URI.create("/reservations/" + reservation.getId());
-        return ResponseEntity.created(location).body(ReservationResponse.from(reservation));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(
-            @PathVariable Long id
-    ) {
-        Reservation deleteReservation = reservations.stream()
-                .filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
-
-        reservations.remove(deleteReservation);
-
-        return ResponseEntity.noContent().build();
-    }
+    // @PostMapping
+    // public ResponseEntity<ReservationResponse> createReservation(
+    //         @RequestBody @Valid ReservationCreateRequest request
+    // ) {
+    //     Reservation reservation = new Reservation(
+    //             index.getAndIncrement(),
+    //             request.name(),
+    //             request.date(),
+    //             request.time()
+    //     );
+    //
+    //     reservations.add(reservation);
+    //
+    //     URI location = URI.create("/reservations/" + reservation.getId());
+    //     return ResponseEntity.created(location).body(ReservationResponse.from(reservation));
+    // }
+    //
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> deleteReservation(
+    //         @PathVariable Long id
+    // ) {
+    //     Reservation deleteReservation = reservations.stream()
+    //             .filter(reservation -> reservation.getId().equals(id))
+    //             .findFirst()
+    //             .orElseThrow(NoSuchElementException::new);
+    //
+    //     reservations.remove(deleteReservation);
+    //
+    //     return ResponseEntity.noContent().build();
+    // }
 }
