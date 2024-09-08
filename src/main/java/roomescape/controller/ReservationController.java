@@ -53,8 +53,7 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        reservationRepository.findById(id)
-            .orElseThrow(NoSuchElementException::new);
+        reservationRepository.getById(id);
 
         reservationRepository.deleteById(id);
         return ResponseEntity.noContent().build();
