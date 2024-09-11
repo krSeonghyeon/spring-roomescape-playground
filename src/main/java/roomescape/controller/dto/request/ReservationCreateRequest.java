@@ -8,15 +8,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record ReservationCreateRequest(
-        @NotBlank
-        String name,
+    @NotBlank
+    String name,
 
-        @NotNull
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate date,
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate date,
 
-        @NotNull
-        @DateTimeFormat(pattern = "HH:mm")
-        LocalTime time
+    @NotNull
+    @DateTimeFormat(pattern = "HH:mm")
+    LocalTime time
 ) {
 }

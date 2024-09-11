@@ -10,4 +10,9 @@ public class PageController {
     public String getReservation() {
         return "reservation";
     }
+
+    @GetMapping("/time")
+    public String getTime() {
+        return "time";
+    }
 }
