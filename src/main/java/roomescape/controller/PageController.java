@@ -8,7 +8,7 @@ public class PageController {
 
     @GetMapping("/reservation")
     public String getReservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/time")

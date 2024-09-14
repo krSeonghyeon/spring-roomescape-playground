@@ -6,20 +6,26 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.controller.dto.request.ReservationCreateRequest;
 import roomescape.controller.dto.response.ReservationResponse;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(
+        ReservationRepository reservationRepository,
+        TimeRepository timeRepository
+    ) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @GetMapping
@@ -37,10 +43,12 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody @Valid ReservationCreateRequest request
     ) {
+        Time time = timeRepository.getById(request.time());
+
         Reservation reservation = new Reservation(
                 request.name(),
                 request.date(),
-                request.time()
+                time
         );
 
         Reservation savedReservation = reservationRepository.save(reservation);
