@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.controller.dto.request.ReservationCreateRequest;
 import roomescape.controller.dto.response.ReservationResponse;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
-import roomescape.repository.ReservationRepository;
-import roomescape.repository.TimeRepository;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -17,25 +14,15 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
-    private final TimeRepository timeRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(
-        ReservationRepository reservationRepository,
-        TimeRepository timeRepository
-    ) {
-        this.reservationRepository = reservationRepository;
-        this.timeRepository = timeRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-
-        List<ReservationResponse> responses = reservations.stream()
-                .map(ReservationResponse::from)
-                .toList();
-
+        List<ReservationResponse> responses = reservationService.getReservations();
         return ResponseEntity.ok().body(responses);
     }
 
@@ -43,27 +30,16 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody @Valid ReservationCreateRequest request
     ) {
-        Time time = timeRepository.getById(request.time());
-
-        Reservation reservation = new Reservation(
-                request.name(),
-                request.date(),
-                time
-        );
-
-        Reservation savedReservation = reservationRepository.save(reservation);
-
-        URI location = URI.create("/reservations/" + savedReservation.getId());
-        return ResponseEntity.created(location).body(ReservationResponse.from(savedReservation));
+        ReservationResponse response = reservationService.createReservation(request);
+        URI location = URI.create("/reservations/" + response.id());
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        reservationRepository.getById(id);
-
-        reservationRepository.deleteById(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }

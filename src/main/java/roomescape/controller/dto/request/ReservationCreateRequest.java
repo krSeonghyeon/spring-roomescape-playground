@@ -10,7 +10,7 @@ public record ReservationCreateRequest(
     @NotBlank
     String date,
 
-    @NotNull(message = "test")
+    @NotNull
     Long time
 ) {
 }
