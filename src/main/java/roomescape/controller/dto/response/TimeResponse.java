@@ -12,6 +12,7 @@ public record TimeResponse(
     @JsonFormat(pattern = "HH:mm")
     LocalTime time
 ) {
+
     public static TimeResponse from(Time time) {
         return new TimeResponse(
             time.getId(),

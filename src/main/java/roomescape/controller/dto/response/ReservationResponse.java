@@ -12,6 +12,7 @@ public record ReservationResponse(
 
     Time time
 ) {
+
     public static ReservationResponse from(Reservation reservation) {
         return new ReservationResponse(
             reservation.getId(),
